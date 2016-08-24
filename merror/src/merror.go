@@ -19,7 +19,7 @@ func (e Errno) Error() string {
 	if 0 <= int(e) && int(e) < len(errors) {
 		return errors[e]
 	}
-	return New(100, "error code not found").Error()
+	return New(100, "error code not found", nil).Error()
 }
 
 type yerror interface {
@@ -27,13 +27,13 @@ type yerror interface {
 }
 
 type YceError struct {
-	Code    int32
-	Message string
-	Data    []byte `json:"data"`
+	Code    int32  `json:"code"`
+	Message string `json:"message"`
+	Data    []byte `json:"data,omitempty"`
 }
 
-func New(code int32, text string) *YceError {
-	return &YceError{Code: code, Message: text}
+func New(code int32, text string, data []byte) *YceError {
+	return &YceError{Code: code, Message: text, Data: data}
 }
 
 func (e *YceError) Error() string {

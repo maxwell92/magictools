@@ -24,7 +24,7 @@ func (a *abcController) LogAndResponse() {
 }
 func Test_LogAndRespose(t *testing.T) {
 	abc := &abcController{
-		Err: New(1, "This is error"),
+		Err: New(1, "This is error", nil),
 		//Logger: mlogger.New(4),
 	}
 
