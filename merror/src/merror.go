@@ -27,32 +27,22 @@ type yerror interface {
 }
 
 type YceError struct {
-	code    int32
-	message string
-}
-
-func New(code int32, text string) *YceError {
-	return &YceError{code: code, message: text}
-}
-
-func (e *YceError) Error() string {
-	return e.message
-}
-
-type Response struct {
-	Code    int32  `json:"code"`
-	Message string `json:"message"`
+	Code    int32
+	Message string
 	Data    []byte `json:"data"`
 }
 
+func New(code int32, text string) *YceError {
+	return &YceError{Code: code, Message: text}
+}
+
+func (e *YceError) Error() string {
+	return e.Message
+}
+
 func (e *YceError) EncodeSelf() []byte {
-	r := &Response{
-		Code:    e.code,
-		Message: e.message,
-		Data:    nil,
-	}
-	log.Println(r)
-	errJSON, err := json.Marshal(r)
+	log.Println(e)
+	errJSON, err := json.Marshal(e)
 	if err != nil {
 		log.Println(err)
 		return nil

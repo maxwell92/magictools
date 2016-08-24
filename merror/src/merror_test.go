@@ -17,8 +17,8 @@ type abcController struct {
 func (a *abcController) LogAndResponse() {
 	//a.Logger.Printf()
 	//a.Write(string(a.Err.EncodeSelf()))
-	log.Println(a.Err.code)
-	log.Println(a.Err.message)
+	log.Println(a.Err.Code)
+	log.Println(a.Err.Message)
 
 	fmt.Println(string(a.Err.EncodeSelf()))
 }
