@@ -8,6 +8,8 @@ import (
 	"time"
 )
 
+//TODO: reconsider of lock.
+
 const (
 	TIMEFORMAT  = "2006-01-02 15:04:05.0000"
 	CALLERDEPTH = 2
@@ -33,9 +35,11 @@ var loglevels = [...]string{
 	TRACE: "Trace",
 }
 
+/*
 func (l LogLevel) Level() string {
 	return loglevels[l]
-}
+
+*/
 
 type Mlogger struct {
 	Level  LogLevel
@@ -57,6 +61,7 @@ func (m *Mlogger) Printf(format string, args ...interface{}) {
 }
 
 func (m *Mlogger) LockPrintf(level LogLevel, format string, args ...interface{}) {
+	//Wrong use of lock.
 	m.lock.Lock()
 	defer m.lock.Unlock()
 	time := time.Now().Format(TIMEFORMAT)
@@ -84,6 +89,7 @@ func (m *Mlogger) Logf(level LogLevel, format string, args ...interface{}) {
 }
 
 func (m *Mlogger) Fatalf(format string, args ...interface{}) {
+	// Wrong use of rlock.
 	m.rwlock.RLock()
 	defer m.rwlock.RUnlock()
 
