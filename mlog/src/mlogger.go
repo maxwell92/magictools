@@ -25,7 +25,7 @@ const (
 )
 
 var loglevels = [...]string{
-	FATAL: "Fatal Error",
+	FATAL: "Fatal",
 	ERROR: "Error",
 	WARN:  "Warning",
 	INFO:  "Info",
@@ -38,36 +38,71 @@ func (l LogLevel) Level() string {
 }
 
 type Mlogger struct {
-	Level LogLevel
-	lock  *sync.Mutex
+	Level  LogLevel
+	lock   *sync.Mutex
+	rwlock *sync.RWMutex
 }
 
 func New(level int) *Mlogger {
-	return &Mlogger{Level: LogLevel(level), lock: new(sync.Mutex)}
+	return &Mlogger{Level: LogLevel(level), lock: new(sync.Mutex), rwlock: new(sync.RWMutex)}
 }
 
-func (m *Mlogger) Printf(v ...interface{}) {
+func (m *Mlogger) Printf(format string, args ...interface{}) {
 	time := time.Now().Format(TIMEFORMAT)
 	loglevel := m.Level.Level()
-	_, file, _, _ := runtime.Caller(CALLERDEPTH)
-	_, _, line, _ := runtime.Caller(CALLERDEPTH)
-	context := fmt.Sprintf("%s", v)
-	fmt.Fprintf(os.Stderr, "%s [%s] %s line %d: %s\n", time, loglevel, file, line, context)
+	pc, file, line, _ := runtime.Caller(CALLERDEPTH)
+	callFunc := runtime.FuncForPC(pc).Name()
+	context := fmt.Sprintf(format, args...)
+	fmt.Fprintf(os.Stderr, "%s [%s] %s line %d: %s: %s\n", time, loglevel, file, line, callFunc, context)
 }
 
-func (m *Mlogger) LockPrintf(v ...interface{}) {
+func (m *Mlogger) LockPrintf(level LogLevel, format string, args ...interface{}) {
 	m.lock.Lock()
 	defer m.lock.Unlock()
 	time := time.Now().Format(TIMEFORMAT)
-	loglevel := m.Level.Level()
-	_, file, _, _ := runtime.Caller(CALLERDEPTH)
-	_, _, line, _ := runtime.Caller(CALLERDEPTH)
-	context := fmt.Sprintf("%s", v)
-	fmt.Fprintf(os.Stderr, "%s [%s] %s line %d: %s\n", time, loglevel, file, line, context)
+	loglevel := level.Level()
+	pc, file, line, _ := runtime.Caller(CALLERDEPTH)
+	callFunc := runtime.FuncForPC(pc).Name()
+	context := fmt.Sprintf(format, args...)
+	fmt.Fprintf(os.Stderr, "%s [%s] %s line %d: %s: %s\n", time, loglevel, file, line, callFunc, context)
 }
 
 /*
-func (m *Mlogger) Println() {
-	fmt.Fprintln(os.Stderr, "abc")
+func (m *Mlogger) Logf(format string, args ...interface{}) {
 }
 */
+func (m *Mlogger) Fatalf(format string, args ...interface{}) {
+	if m.Level >= FATAL {
+		m.LockPrintf(FATAL, format, args...)
+	}
+}
+
+func (m *Mlogger) Errorf(format string, args ...interface{}) {
+	if m.Level >= ERROR {
+		m.LockPrintf(ERROR, format, args...)
+	}
+}
+
+func (m *Mlogger) Warnf(format string, args ...interface{}) {
+	if m.Level >= ERROR {
+		m.LockPrintf(WARN, format, args...)
+	}
+}
+
+func (m *Mlogger) Infof(format string, args ...interface{}) {
+	if m.Level >= INFO {
+		m.LockPrintf(INFO, format, args...)
+	}
+}
+
+func (m *Mlogger) Debugf(format string, args ...interface{}) {
+	if m.Level >= DEBUG {
+		m.LockPrintf(DEBUG, format, args...)
+	}
+}
+
+func (m *Mlogger) Tracef(format string, args ...interface{}) {
+	if m.Level >= TRACE {
+		m.LockPrintf(TRACE, format, args...)
+	}
+}

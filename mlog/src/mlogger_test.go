@@ -1,10 +1,10 @@
 package mlogger
 
 import (
-	"fmt"
-	"strconv"
+	//"fmt"G
+	//"strconv"
 	"testing"
-	"time"
+	//"time"
 )
 
 /*
@@ -18,26 +18,44 @@ func Test_Printf(t *testing.T) {
 }
 */
 
+const (
+	LOGLEVEL = 4
+)
+
+/*
 func Test_Concurrent_Printf(t *testing.T) {
 	fmt.Println(time.Now().Format(TIMEFORMAT))
 	l := New(3)
 
 	for i := 0; i < 500; i++ {
-		go l.Printf("This is log %s", strconv.Itoa(i))
+		l.Printf("This is log", strconv.Itoa(i))
 	}
 
 	fmt.Println(time.Now().Format(TIMEFORMAT))
 	time.Sleep(time.Duration(5) * time.Second)
 }
+*/
 
+/*
 func Test_Concurrent_LockPrintf(t *testing.T) {
 	fmt.Println(time.Now().Format(TIMEFORMAT))
 	l := New(3)
 
 	for i := 0; i < 500; i++ {
-		go l.LockPrintf("This is log %s", strconv.Itoa(i))
+		l.LockPrintf("This is log %s", strconv.Itoa(i))
 	}
 
 	fmt.Println(time.Now().Format(TIMEFORMAT))
 	time.Sleep(time.Duration(5) * time.Second)
+}
+*/
+
+func Test_Concurrent_LockPrintf(t *testing.T) {
+	l := New(LOGLEVEL)
+	l.Infof("INFO")
+	l.Debugf("DEBUG")
+	l.Errorf("ERROR")
+	l.Warnf("WARN")
+	l.Tracef("TRACE")
+	l.Fatalf("FATAL")
 }
