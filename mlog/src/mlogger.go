@@ -85,7 +85,7 @@ func (m *Mlogger) Logf(level LogLevel, format string, args ...interface{}) {
 
 func (m *Mlogger) Fatalf(format string, args ...interface{}) {
 	m.rwlock.Lock()
-	defer m.rwlock.Lock()
+	defer m.rwlock.Unlock()
 
 	if m.Level >= FATAL {
 		m.LockPrintf(FATAL, format, args...)
@@ -94,7 +94,7 @@ func (m *Mlogger) Fatalf(format string, args ...interface{}) {
 
 func (m *Mlogger) Errorf(format string, args ...interface{}) {
 	m.rwlock.Lock()
-	defer m.rwlock.Lock()
+	defer m.rwlock.Unlock()
 
 	if m.Level >= ERROR {
 		m.LockPrintf(ERROR, format, args...)
@@ -103,7 +103,7 @@ func (m *Mlogger) Errorf(format string, args ...interface{}) {
 
 func (m *Mlogger) Warnf(format string, args ...interface{}) {
 	m.rwlock.Lock()
-	defer m.rwlock.Lock()
+	defer m.rwlock.Unlock()
 
 	if m.Level >= ERROR {
 		m.LockPrintf(WARN, format, args...)
@@ -112,7 +112,7 @@ func (m *Mlogger) Warnf(format string, args ...interface{}) {
 
 func (m *Mlogger) Infof(format string, args ...interface{}) {
 	m.rwlock.Lock()
-	defer m.rwlock.Lock()
+	defer m.rwlock.Unlock()
 
 	if m.Level >= INFO {
 		m.LockPrintf(INFO, format, args...)
@@ -121,7 +121,7 @@ func (m *Mlogger) Infof(format string, args ...interface{}) {
 
 func (m *Mlogger) Debugf(format string, args ...interface{}) {
 	m.rwlock.Lock()
-	defer m.rwlock.Lock()
+	defer m.rwlock.Unlock()
 
 	if m.Level >= DEBUG {
 		m.LockPrintf(DEBUG, format, args...)
@@ -130,7 +130,7 @@ func (m *Mlogger) Debugf(format string, args ...interface{}) {
 
 func (m *Mlogger) Tracef(format string, args ...interface{}) {
 	m.rwlock.Lock()
-	defer m.rwlock.Lock()
+	defer m.rwlock.Unlock()
 
 	if m.Level >= TRACE {
 		m.LockPrintf(TRACE, format, args...)
