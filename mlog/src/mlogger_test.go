@@ -22,22 +22,22 @@ func Test_Concurrent_Printf(t *testing.T) {
 	fmt.Println(time.Now().Format(TIMEFORMAT))
 	l := New(3)
 
-	for i := 0; i < 200; i++ {
+	for i := 0; i < 500; i++ {
 		go l.Printf("This is log %s", strconv.Itoa(i))
 	}
 
-	time.Sleep(time.Duration(3) * time.Second)
 	fmt.Println(time.Now().Format(TIMEFORMAT))
+	time.Sleep(time.Duration(5) * time.Second)
 }
 
 func Test_Concurrent_LockPrintf(t *testing.T) {
 	fmt.Println(time.Now().Format(TIMEFORMAT))
 	l := New(3)
 
-	for i := 0; i < 200; i++ {
-		go l.Printf("This is log %s", strconv.Itoa(i))
+	for i := 0; i < 500; i++ {
+		go l.LockPrintf("This is log %s", strconv.Itoa(i))
 	}
 
-	time.Sleep(time.Duration(3) * time.Second)
 	fmt.Println(time.Now().Format(TIMEFORMAT))
+	time.Sleep(time.Duration(5) * time.Second)
 }
